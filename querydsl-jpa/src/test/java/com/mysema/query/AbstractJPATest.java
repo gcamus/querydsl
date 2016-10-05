@@ -168,6 +168,32 @@ public abstract class AbstractJPATest {
         employee2.jobFunctions.add(JobFunction.CONTROLLER);
         save(employee2);
 
+
+        Employee employee3 = new Employee();
+        employee3.id = 3;
+        employee3.lastName = "Doe";
+        employee3.jobFunctions.add(JobFunction.CODER);
+        employee3.jobFunctions.add(JobFunction.CONSULTANT);
+        employee3.jobFunctions.add(JobFunction.CONTROLLER);
+        save(employee3);
+
+        Department department = new Department();
+        department.id = 1;
+        department.name = "departement1";
+        department.employees = Lists.newArrayList(employee, employee2);
+        save(department);
+
+        Department department2 = new Department();
+        department2.id = 2;
+        department2.name = "departement2";
+        department2.employees = Lists.newArrayList(employee3);
+        save(department2);
+
+        Department department3 = new Department();
+        department3.id = 3;
+        department3.name = "departement3";
+        save(department3);
+
         save(new Entity1(1));
         save(new Entity1(2));
         save(new Entity2(3));
@@ -748,6 +774,18 @@ public abstract class AbstractJPATest {
     }
 
     @Test
+    public void testGcamus() {
+        QDepartment department = QDepartment.department;
+        QEmployee employee = QEmployee.employee;
+
+        List<Tuple> list = query().from(department).leftJoin(department.employees, employee).groupBy(department).list(department, employee.id.max());
+        assertEquals(3, list.size());
+
+        SearchResults<Tuple> results = query().from(department).leftJoin(department.employees, employee).groupBy(department).listResults(department, employee.id.max());
+        assertEquals(3, results.getTotal());
+    }
+
+    @Test
     @Ignore // FIXME
     public void GroupBy_Count() {
         List<Integer> ids = query().from(cat).groupBy(cat.id).list(cat.id);
@@ -761,6 +799,7 @@ public abstract class AbstractJPATest {
         assertEquals(catCount, results.getResults().size());
         assertEquals(catCount, results.getTotal());
     }
+
 
     @Test
     @Ignore // FIXME

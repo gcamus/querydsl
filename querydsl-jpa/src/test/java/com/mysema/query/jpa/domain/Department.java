@@ -30,14 +30,14 @@ import org.batoo.jpa.annotations.Index;
 @Table(name="department_")
 public class Department {
     @ManyToOne
-    Company company;
+    public Company company;
 
     @OneToMany
     @Index(name = "_index")
-    List<Employee> employees;
+    public List<Employee> employees;
 
     @Id
-    int id;
-    
-    String name;
+    public int id;
+
+    public String name;
 }
